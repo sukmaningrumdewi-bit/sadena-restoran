@@ -2,13 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KasirAuthController;
-use App\Http\Controllers\AuthController; // Pastikan import AuthController
+use App\Http\Controllers\AuthController;
 
 // ==========================================
 // LANDING PAGE
 // ==========================================
 Route::get('/', function () {
-    return view('index'); // Memanggil index.blade.php
+    return view('index'); 
 });
 
 // Proses Register (Menggunakan AuthController)
@@ -32,19 +32,21 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ==========================================
-// ADMIN & USER (Menggunakan AuthController)
+// ADMIN & USER (View Dipisah Secara Tegas)
 // ==========================================
-// Form Login
-Route::get('/admin', [AuthController::class, 'showLoginForm'])->name('admin.login');
+// 1. Halaman Login Admin
+Route::get('/admin', function () {
+    return view('admin.index'); // Pastikan file view admin index-nya ada
+})->name('admin.login');
+
+// 2. Halaman Login User
 Route::get('/user', function () {
-    return view('user.login');
+    return view('user.login'); // Mengarah ke resources/views/user/login.blade.php
 })->name('user.login');
 
-// Proses Login Utama (Menggunakan method login di AuthController agar mendukung Admin & User sekaligus)
+// Proses Login POST (Menggunakan method login AuthController untuk memproses data keduanya)
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 Route::post('/user/login', [AuthController::class, 'login'])->name('user.login.post');
-
-// (Opsional jika ingin mempertahankan rute /login-proses bawaan fetch sebelumnya)
 Route::post('/login-proses', [AuthController::class, 'login'])->name('login.proses');
 
 // Dashboard Admin & User (Dilindungi middleware)
