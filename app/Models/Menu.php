@@ -13,12 +13,12 @@ class Menu extends Model
 
     protected $fillable = [
         'nama_menu',
-        'harga',
         'kategori',
-        'is_active',
+        'harga',
+        'stok',
         'gambar',
         'deskripsi',
-        'stok',
+        'is_active',
     ];
     public function detailPesanans()
 {
