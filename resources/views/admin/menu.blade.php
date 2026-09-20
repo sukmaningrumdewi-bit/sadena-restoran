@@ -602,9 +602,10 @@
       <div class="select-field">
         <select id="categoryFilter" aria-label="Filter kategori">
           <option value="all">Semua Kategori</option>
-          <option value="Makanan Utama">Makanan Utama</option>
-          <option value="Minuman">Minuman</option>
-          <option value="Cemilan">Cemilan</option>
+          <option value="Hidangan Utama">Hidangan Utama</option>
+          <option value="Sajian Berkuah">Sajian Berkuah</option>
+          <option value="Pencuci Mulut">Pencuci Mulut</option>
+          <option value="Minuman Segar">Minuman Segar</option>
         </select>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 9l6 6 6-6"/>
@@ -713,9 +714,10 @@
           <div class="form-group">
             <label for="edit_kategori">Kategori</label>
             <select id="edit_kategori" name="kategori" required>
-              <option value="Makanan Utama">Makanan Utama</option>
-              <option value="Minuman">Minuman</option>
-              <option value="Cemilan">Cemilan</option>
+              <option value="Hidangan Utama">Hidangan Utama</option>
+              <option value="Sajian Berkuah">Sajian Berkuah</option>
+              <option value="Pencuci Mulut">Pencuci Mulut</option>
+              <option value="Minuman Segar">Minuman Segar</option>
             </select>
           </div>
 
@@ -751,52 +753,7 @@
   </div>
 
       <!-- FORM HARUS BERADA DI DALAM MODAL CARD INI -->
-      <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data" class="modern-form">
-        @csrf
-        
-        <div class="form-group">
-          <label for="fieldName">Nama Menu</label>
-          <input type="text" id="fieldName" name="nama_menu" required placeholder="Contoh: Nasi Goreng Spesial" autocomplete="off">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="fieldCategory">Kategori</label>
-            <select id="fieldCategory" name="kategori" required>
-              <option value="Makanan Utama">Makanan Utama</option>
-              <option value="Minuman">Minuman</option>
-              <option value="Cemilan">Cemilan</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="fieldPrice">Harga (Rp)</label>
-            <input type="number" id="fieldPrice" name="harga" required min="0" step="1000" placeholder="22000" inputmode="numeric">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="fieldStock">Stok Awal</label>
-            <input type="number" id="fieldStock" name="stok" required min="0" value="10">
-          </div>
-
-          <div class="form-group">
-            <label>Upload Foto (.PNG, .JPG)</label>
-            <input type="file" id="fieldFoto" name="gambar" accept=".png, .jpg, .jpeg" required style="width: 100% !important; padding: 11px !important; border: 1.5px dashed #94a3b8 !important; border-radius: 10px !important; font-size: 14px !important; background: #f8fafc !important; color: #475569 !important; cursor: pointer !important; box-sizing: border-box !important;">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Deskripsi Singkat</label>
-          <textarea name="deskripsi" rows="2" placeholder="Deskripsi menarik tentang menu..."></textarea>
-        </div>
-
-        <div class="modal-actions">
-          <button type="button" class="btn-secondary" data-close-modal onclick="document.getElementById('menuModal').classList.remove('show'); document.body.style.overflow='';">Batal</button>
-          <button type="submit" class="btn-primary" id="submitBtn">Simpan</button>
-        </div>
-      </form>
+      
       <!-- PENUTUP FORM DAN MODAL CARD YANG BENAR -->
     </div>
   </div>
@@ -930,102 +887,143 @@
   </div>
 </div>
 
- <!-- ================= MODAL: Atur Landing Page ================= -->
+  <!-- ================= MODAL: Atur Landing Page (Ekstra Lebar & Validasi Penuh) ================= -->
 <div class="modal" id="landingConfigModal" role="dialog" aria-modal="true" aria-labelledby="landingModalTitle">
   <div class="modal-backdrop" onclick="document.getElementById('landingConfigModal').classList.remove('show'); document.body.style.overflow='';"></div>
   
-  <div class="modal-card" style="max-width: 560px !important; padding: 32px !important;">
-    <div class="modal-head">
-      <h2 id="landingModalTitle">Atur Menu Landing Page (Maks. 4)</h2>
-      <button class="modal-close" type="button" aria-label="Tutup dialog" onclick="document.getElementById('landingConfigModal').classList.remove('show'); document.body.style.overflow='';">
+  <div class="modal-card" style="max-width: 1100px !important; padding: 40px !important; border-radius: 16px !important;">
+    
+    <div class="modal-head" style="margin-bottom: 24px !important; border-bottom: 1px solid #e2e8f0 !important; padding-bottom: 16px !important; align-items: flex-start !important;">
+      <div>
+        <h2 id="landingModalTitle" style="font-size: 24px !important; font-weight: 800 !important; color: var(--brown) !important; margin: 0 0 6px 0 !important;">Atur Menu Landing Page</h2>
+        <p style="margin: 0; font-size: 14px; color: #64748b; font-weight: 500;">Pilih maksimal 4 menu terbaik untuk masing-masing kategori di bawah.</p>
+      </div>
+      <button class="modal-close" type="button" aria-label="Tutup dialog" onclick="document.getElementById('landingConfigModal').classList.remove('show'); document.body.style.overflow='';" style="margin-top: -4px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
+
+    @php
+      // Kita hitung data menu aktif sejak awal agar bisa dipakai di form maupun grid
+      $kategoriList = ['Hidangan Utama', 'Sajian Berkuah', 'Pencuci Mulut', 'Minuman Segar'];
+      $activeMenus = ($menus ?? collect())->where('is_active', 1);
+    @endphp
 
     <!-- Form Tambah ke Landing Page -->
     <form action="{{ route('admin.landing.store') }}" method="POST" class="modern-form">
       @csrf
 
-      <!-- PEMBERITAHUAN JIKA SUDAH MELEBIHI BATAS MAKSIMAL -->
-    @if(session('error'))
-      <div style="background: #fee2e2; color: #dc2626; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; font-weight: 600; border: 1px solid #f87171;">
-        ⚠️ {{ session('error') }}
-      </div>
-    @endif
+      @if(session('error'))
+        <div style="background: #fee2e2; color: #dc2626; padding: 14px 18px; border-radius: 10px; font-size: 14px; margin-bottom: 24px; font-weight: 600; border: 1px solid #f87171; display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          {{ session('error') }}
+        </div>
+      @endif
 
-    @if(session('success'))
-      <div style="background: #f0fdf4; color: #16a34a; padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-bottom: 16px; font-weight: 600; border: 1px solid #4ade80;">
-        ✅ {{ session('success') }}
-      </div>
-    @endif
+      @if(session('success'))
+        <div style="background: #f0fdf4; color: #16a34a; padding: 14px 18px; border-radius: 10px; font-size: 14px; margin-bottom: 24px; font-weight: 600; border: 1px solid #4ade80; display: flex; align-items: center; gap: 10px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          {{ session('success') }}
+        </div>
+      @endif
       
-      <div class="form-row">
-        <div class="form-group" style="flex: 1;">
-          <label for="selectMenuLanding">Pilih Menu</label>
-          <select id="selectMenuLanding" name="id_menu" required>
-            <option value="" disabled selected>Pilih menu...</option>
+      <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="selectMenuLanding" style="font-size: 15px !important; color: #1e293b !important;">1. Pilih Menu</label>
+          <select id="selectMenuLanding" name="id_menu" required style="height: 48px !important; font-size: 14px !important; border-radius: 10px !important; width: 100% !important; padding: 0 16px !important; border: 1.5px solid #cbd5e1 !important; background-color: #f8fafc !important; cursor: pointer;">
+            <option value="" disabled selected>Pilih menu yang tersedia...</option>
             @foreach($menus ?? [] as $m)
               <option value="{{ $m->id_menu }}">{{ $m->nama_menu }}</option>
             @endforeach
           </select>
         </div>
 
-        <div class="form-group" style="flex: 1;">
-          <label for="selectKategoriLanding">Kategori Landing Page</label>
-          <select id="selectKategoriLanding" name="kategori_beranda" required>
-            <option value="Hidangan Utama">Hidangan Utama</option>
-            <option value="Sajian Berkuah">Sajian Berkuah</option>
-            <option value="Pencuci Mulut">Pencuci Mulut</option>
-            <option value="Minuman Segar">Minuman Segar</option>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label for="selectKategoriLanding" style="font-size: 15px !important; color: #1e293b !important;">2. Kategori Tujuan</label>
+          <select id="selectKategoriLanding" name="kategori_beranda" required style="height: 48px !important; font-size: 14px !important; border-radius: 10px !important; width: 100% !important; padding: 0 16px !important; border: 1.5px solid #cbd5e1 !important; background-color: #f8fafc !important; cursor: pointer;">
+            <option value="" disabled selected>Pilih kategori...</option>
+            
+            <!-- Looping kategori dan mematikan opsi yang sudah penuh -->
+            @foreach($kategoriList as $kat)
+              @php
+                $countKat = $activeMenus->where('kategori', $kat)->count();
+                $isKatFull = $countKat >= 4;
+              @endphp
+              <option value="{{ $kat }}" {{ $isKatFull ? 'disabled' : '' }} style="{{ $isKatFull ? 'color: #ef4444; background: #fee2e2;' : '' }}">
+                {{ $kat }} {{ $isKatFull ? '(Penuh)' : "($countKat/4)" }}
+              </option>
+            @endforeach
+            
           </select>
         </div>
       </div>
 
-      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; margin-bottom: 20px;">
-        <button type="submit" class="btn-primary" style="height: 40px; padding: 0 16px; font-size: 14px;">+ Masukkan ke Landing Page</button>
+      <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+        <button type="submit" class="btn-primary" style="height: 44px; padding: 0 24px; font-size: 14px; border-radius: 8px;">
+          + Masukkan ke Kotak
+        </button>
       </div>
     </form>
 
-    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+    <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 24px 0;">
 
-    <!-- Daftar Makanan yang Sudah Ada di Landing Page -->
-    <div style="font-size: 14px; font-weight: 700; color: var(--brown); margin-bottom: 12px;">
-      Daftar Menu Aktif di Landing Page
-    </div>
+    <h3 style="font-size: 17px; font-weight: 800; color: var(--brown); margin: 0 0 16px 0;">Menu di Landing Page Saat Ini</h3>
     
-    <div style="max-height: 180px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-      <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
-        <thead>
-          <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-            <th style="padding: 10px; text-align: left;">Nama Menu</th>
-            <th style="padding: 10px; text-align: left;">Kategori</th>
-            <th style="padding: 10px; text-align: center;">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse(($menus ?? [])->where('is_active', 1) as $activeMenu)
-            <tr style="border-bottom: 1px solid #f1f5f9;">
-              <td style="padding: 10px; font-weight: 600;">{{ $activeMenu->nama_menu }}</td>
-              <td style="padding: 10px;"><span class="chip" style="padding: 4px 8px; font-size: 12px;">{{ $activeMenu->kategori }}</span></td>
-              <td style="padding: 10px; text-align: center;">
-                <form action="{{ route('admin.landing.remove', $activeMenu->id_menu) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Hapus menu ini dari landing page?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" style="background: #fee2e2; color: #ef4444; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;">Hapus</button>
-                </form>
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="3" style="padding: 20px; text-align: center; color: #64748b;">Belum ada menu aktif di landing page.</td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; align-items: start;">
+      
+      @foreach($kategoriList as $kat)
+        @php
+          $items = $activeMenus->where('kategori', $kat);
+          $isFull = $items->count() >= 4;
+        @endphp
+
+        <!-- Kotak Per Kategori -->
+        <div style="background: #fcfdfd; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+          
+          <!-- Header Kotak -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 12px;">
+            <h4 style="margin: 0; color: var(--brown); font-size: 14px; font-weight: 800; line-height: 1.2;">{{ $kat }}</h4>
+            <span style="font-size: 11px; font-weight: 800; color: {{ $isFull ? '#ef4444' : '#64748b' }}; background: {{ $isFull ? '#fee2e2' : '#f1f5f9' }}; padding: 4px 8px; border-radius: 20px; white-space: nowrap; margin-left: 8px;">
+              {{ $items->count() }} / 4
+            </span>
+          </div>
+
+          <!-- Isi Kotak -->
+          @if($items->count() > 0)
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+              @foreach($items as $item)
+                <li style="display: flex; justify-content: space-between; align-items: center; background: #fff; border: 1px solid #e2e8f0; padding: 8px; border-radius: 8px;">
+                  
+                  <span style="font-size: 12.5px; font-weight: 700; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 8px;">
+                    {{ $item->nama_menu }}
+                  </span>
+                  
+                  <form action="{{ route('admin.landing.remove', $item->id_menu) }}" method="POST" style="margin: 0; flex: none;" onsubmit="return confirm('Keluarkan {{ $item->nama_menu }} dari kotak ini?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" style="background: #fee2e2; border: none; color: #ef4444; cursor: pointer; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'" title="Hapus">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 13px; height: 13px;"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </form>
+                </li>
+              @endforeach
+            </ul>
+          @else
+            <div style="text-align: center; color: #94a3b8; font-size: 12px; padding: 16px 0; font-weight: 500;">
+              Belum ada menu di sini.
+            </div>
+          @endif
+
+        </div>
+      @endforeach
+
     </div>
 
-    <div class="modal-actions" style="margin-top: 24px;">
-      <button type="button" class="btn-secondary" onclick="document.getElementById('landingConfigModal').classList.remove('show'); document.body.style.overflow='';">Tutup</button>
+    <!-- Tombol Tutup di Bawah -->
+    <div class="modal-actions" style="margin-top: 30px; border-top: 1px solid #f1f5f9; padding-top: 20px;">
+      <button type="button" class="btn-secondary" onclick="document.getElementById('landingConfigModal').classList.remove('show'); document.body.style.overflow='';" style="height: 44px; padding: 0 30px; font-size: 14px; border-radius: 8px;">
+        Selesai
+      </button>
     </div>
   </div>
 </div>

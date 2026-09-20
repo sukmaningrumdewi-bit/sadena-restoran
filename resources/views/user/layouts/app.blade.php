@@ -34,7 +34,7 @@
       position: relative; flex-shrink: 0; width: 227px;
       padding: 24px 0 32px; background-color: #461300; color: #ffffff;
       overflow: hidden; box-shadow: 5px 4px 4px rgba(0, 0, 0, 0.25); z-index: 2;
-      display: flex; flex-direction: column; min-height: 100vh; position: sticky; top: 0;
+      display: flex; flex-direction: column; height: 100vh; position: sticky; top: 0;
     }
     .sidebar-art {
       position: absolute; left: -90px; bottom: -70px; width: 374px; height: 260px;
@@ -65,7 +65,7 @@
     .main { display: flex; flex: 1; min-width: 0; flex-direction: column; }
     
     .topbar {
-      position: relative; z-index: 1; display: flex; align-items: center; justify-content: flex-end;
+      position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: flex-end;
       gap: 20px; height: 77px; padding: 0 30px; background-color: #ffffff;
       box-shadow: 5px 4px 4px rgba(0, 0, 0, 0.25);
     }
@@ -76,9 +76,8 @@
     }
 
     .content {
-      width: 100%; max-width: 960px; margin: 0 auto; padding: 32px 40px 60px;
-    }
-
+  width: 100%; max-width: 960px; margin: 0 auto; padding: 32px 40px 60px;
+}
     @media (max-width: 900px) {
       .app { flex-direction: column; }
       .sidebar { width: 100%; min-height: auto; position: relative; padding-bottom: 20px; }

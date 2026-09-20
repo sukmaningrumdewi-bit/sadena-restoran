@@ -6,6 +6,10 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserReservasiController;
+use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -84,9 +88,7 @@ Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.m
 
 
     // ---- USER ROUTES ----
-    Route::get('/user/dashboard', function () {
-        return view('user.dashboard'); 
-    })->name('user.dashboard');
+    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
 
     Route::get('/user/pesanan', function () {
         return view('user.pesanan'); 
@@ -100,3 +102,8 @@ Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.m
     // Proses Logout bersama
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
+
+Route::get('/user/reservasi', [UserReservasiController::class, 'index'])->name('user.reservasi');
+Route::get('/user/profile', [UserProfileController::class, 'index'])->name('user.profile');
+Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
+Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');

@@ -294,9 +294,9 @@
             <td>
               <div class="product-cell">
                 @if($menu->gambar)
-                <img src="{{ asset('storage/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}" class="product-img">
-                @endif
-                <div class="product-img" style="display: grid; place-items: center; font-size: 18px; background: #f1f5f9;">🍽️</div>
+                  <img src="{{ asset('storage/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}" class="product-img">
+                @else
+                  <div class="product-img" style="display: grid; place-items: center; font-size: 18px; background: #f1f5f9;">🍽️</div>
                 @endif
                 <div>
                   <div class="product-name">{{ $menu->nama_menu }}</div>
@@ -308,37 +308,6 @@
             <td>Rp {{ number_format($menu->harga, 0, ',', '.') }}</td>
             <td class="fw-bold">{{ $menu->stok ?? 0 }}</td>
             <td class="fw-bold" style="color: var(--green);">Rp {{ number_format($menu->harga * ($menu->stok ?? 1), 0, ',', '.') }}</td>
-          </tr>
-          <tr>
-           @endforeach 
-            <td>
-              <div class="product-cell">
-                <div class="product-img"></div>
-                <div>
-                  <div class="product-name">Es Kopi Susu Aren</div>
-                  <div class="product-category">Minuman Dingin</div>
-                </div>
-              </div>
-            </td>
-            <td>Minuman</td>
-            <td>Rp 22.000</td>
-            <td class="fw-bold">98</td>
-            <td class="fw-bold" style="color: var(--green);">Rp 2.156.000</td>
-          </tr>
-          <tr>
-            <td>
-              <div class="product-cell">
-                <div class="product-img"></div>
-                <div>
-                  <div class="product-name">Sate Ayam Madura</div>
-                  <div class="product-category">Makanan Utama</div>
-                </div>
-              </div>
-            </td>
-            <td>Makanan</td>
-            <td>Rp 30.000</td>
-            <td class="fw-bold">75</td>
-            <td class="fw-bold" style="color: var(--green);">Rp 2.250.000</td>
           </tr>
           @endforeach
         </tbody>
