@@ -2,14 +2,18 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KasirAuthController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
 
-// ==========================================
-// LANDING PAGE
-// ==========================================
-Route::get('/', function () {
-    return view('index'); 
-});
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+Route::get('/', [HomeController::class, 'index']);
+
+// Landing Page Routes
+Route::post('/admin/landing-page/store', [MenuController::class, 'storeLandingMenu'])->name('admin.landing.store');
+Route::delete('/admin/landing-page/remove/{id}', [MenuController::class, 'removeLandingMenu'])->name('admin.landing.remove');
 
 // Proses Register (Menggunakan AuthController)
 Route::post('/register-proses', [AuthController::class, 'register'])->name('register.proses');
@@ -60,6 +64,23 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.pemesanan');
     })->name('admin.pemesanan');
 
+    Route::get('/admin/menu', [MenuController::class, 'index'])->name('admin.menu');
+    Route::post('/admin/menu', [MenuController::class, 'store'])->name('admin.menu.store');
+    Route::delete('/admin/menu/{id}', [MenuController::class, 'destroy'])->name('admin.menu.destroy');
+
+    Route::get('/admin/pelanggan', function () {
+    return view('admin.pelanggan');
+    })->name('admin.pelanggan');
+
+    Route::get('/admin/laporan', function () {
+    return view('admin.laporan');
+    })->name('admin.laporan');
+
+    Route::get('/admin/pengaturan', function () {
+    return view('admin.pengaturan');
+    })->name('admin.pengaturan');
+
+
     // ---- USER ROUTES ----
     Route::get('/user/dashboard', function () {
         return view('user.dashboard'); 
@@ -72,6 +93,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/favorit', function () {
         return view('user.favorit'); 
     })->name('user.favorit');
+
 
     // Proses Logout bersama
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

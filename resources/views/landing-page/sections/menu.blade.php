@@ -98,11 +98,12 @@
             <p class="menu-card-desc">Mahakarya kuliner tradisional yang kaya akan rempah pilihan.</p>
           </div>
           <ul class="menu-card-list">
-            <li>1. Rendang Daging Sapi</li>
-            <li>2. Nasi Kuning Spesial</li>
-            <li>3. Gurami Bakar</li>
-            <li>4. Nasi Uduk Spesial</li>
-          </ul>
+            @forelse($hidanganUtama as $index => $menu)
+    <li>{{ $index + 1 }}. {{ $menu->nama_menu }}</li>
+  @empty
+    <li class="text-sm opacity-60">Belum ada menu tersedia</li>
+  @endforelse
+</ul>
         </div>
       </div>
 
@@ -155,11 +156,12 @@
             <p class="menu-card-desc">Kehangatan kuah kaldu tradisional yang memanjakan lidah.</p>
           </div>
           <ul class="menu-card-list pointer-events-none">
-            <li>1. Sop Rawon Daging</li>
-            <li>2. Coto Makassar</li>
-            <li>3. Sop Buntut Premium</li>
-            <li>4. Soto Ayam Lamongan</li>
-          </ul>
+            @forelse($sajianBerkuah as $index => $menu)
+    <li>{{ $index + 1 }}. {{ $menu->nama_menu }}</li>
+  @empty
+    <li class="text-sm opacity-60">Belum ada menu tersedia</li>
+  @endforelse
+</ul>
         </div>
 
         <!-- Kartu 3 -->
@@ -172,11 +174,12 @@
             <p class="menu-card-desc">Penutup manis dari ragam jajanan khas nusantara.</p>
           </div>
           <ul class="menu-card-list pointer-events-none">
-            <li>1. Klepon</li>
-            <li>2. Pisang Goreng Madu</li>
-            <li>3. Bika Ambon</li>
-            <li>4. Bubur Sum-Sum</li>
-          </ul>
+            @forelse($pencuciMulut as $index => $menu)
+    <li>{{ $index + 1 }}. {{ $menu->nama_menu }}</li>
+  @empty
+    <li class="text-sm opacity-60">Belum ada menu tersedia</li>
+  @endforelse
+</ul>
         </div>
 
         <!-- Kartu 4 -->
@@ -189,11 +192,12 @@
             <p class="menu-card-desc">Kesegaran minuman tropis dan tradisional untuk melengkapi santapan Anda.</p>
           </div>
           <ul class="menu-card-list pointer-events-none">
-            <li>1. Es Pisang Ijo</li>
-            <li>2. Es Cendol Spesial</li>
-            <li>3. Wedang Jahe</li>
-            <li>4. Es Buah</li>
-          </ul>
+            @forelse($minumanSegar as $index => $menu)
+    <li>{{ $index + 1 }}. {{ $menu->nama_menu }}</li>
+  @empty
+    <li class="text-sm opacity-60">Belum ada menu tersedia</li>
+  @endforelse
+</ul>
         </div>
 
       </div>
