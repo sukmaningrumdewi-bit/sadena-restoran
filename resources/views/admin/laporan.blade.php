@@ -289,22 +289,28 @@
           </tr>
         </thead>
         <tbody id="tableBodyContent">
+          @foreach($menus as $menu)
           <tr>
             <td>
               <div class="product-cell">
-                <div class="product-img"></div>
+                @if($menu->gambar)
+                <img src="{{ asset('storage/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}" class="product-img">
+                @endif
+                <div class="product-img" style="display: grid; place-items: center; font-size: 18px; background: #f1f5f9;">🍽️</div>
+                @endif
                 <div>
-                  <div class="product-name">Nasi Goreng Spesial</div>
-                  <div class="product-category">Makanan Utama</div>
+                  <div class="product-name">{{ $menu->nama_menu }}</div>
+                  <div class="product-category">{{ $menu->deskripsi ?? 'Menu Sadena' }}</div>
                 </div>
               </div>
             </td>
-            <td>Makanan</td>
-            <td>Rp 35.000</td>
-            <td class="fw-bold">142</td>
-            <td class="fw-bold" style="color: var(--green);">Rp 4.970.000</td>
+            <td>{{ $menu->kategori }}</td>
+            <td>Rp {{ number_format($menu->harga, 0, ',', '.') }}</td>
+            <td class="fw-bold">{{ $menu->stok ?? 0 }}</td>
+            <td class="fw-bold" style="color: var(--green);">Rp {{ number_format($menu->harga * ($menu->stok ?? 1), 0, ',', '.') }}</td>
           </tr>
           <tr>
+           @endforeach 
             <td>
               <div class="product-cell">
                 <div class="product-img"></div>
@@ -334,6 +340,7 @@
             <td class="fw-bold">75</td>
             <td class="fw-bold" style="color: var(--green);">Rp 2.250.000</td>
           </tr>
+          @endforeach
         </tbody>
       </table>
     </div>

@@ -109,4 +109,48 @@ public function removeLandingMenu($id)
 
     return redirect()->back()->with('success', 'Menu berhasil dihapus dari Landing Page!');
 }
+
+// 4. Mengambil data menu untuk diedit (mengembalikan format JSON)
+    public function edit($id)
+    {
+        $menu = Menu::where('id_menu', $id)->firstOrFail();
+        return response()->json($menu);
+    }
+
+    // 5. Menyimpan perubahan data menu yang telah diedit
+    public function update(Request $request, $id)
+    {
+        $menu = Menu::where('id_menu', $id)->firstOrFail();
+        
+        $request->validate([
+            'nama_menu' => 'required|string|max:255',
+            'kategori'  => 'required|string',
+            'harga'     => 'required|numeric',
+            'stok'      => 'required|integer',
+            'gambar'    => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        // Jika ada upload gambar baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($menu->gambar && \Storage::disk('public')->exists($menu->gambar)) {
+                \Storage::disk('public')->delete($menu->gambar);
+            }
+            // Simpan gambar baru
+            $path = $request->file('gambar')->store('menu_images', 'public');
+            $menu->gambar = $path;
+        }
+
+        // Update data ke database
+        $menu->update([
+            'nama_menu' => $request->nama_menu,
+            'kategori'  => $request->kategori,
+            'harga'     => $request->harga,
+            'stok'      => $request->stok,
+            'deskripsi' => $request->deskripsi,
+        ]);
+
+        return redirect()->route('admin.menu')->with('success', 'Menu berhasil diperbarui!');
+    }
 }

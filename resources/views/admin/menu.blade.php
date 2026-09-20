@@ -620,11 +620,11 @@
 </button>
 
       <button class="btn-primary" id="addMenuBtn" type="button" onclick="document.getElementById('menuModal').classList.add('show'); document.body.style.overflow='hidden';">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M12 5v14M5 12h14"/>
-  </svg>
-  Tambah Menu
-</button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:20px;height:20px;">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
+        Tambah Menu
+      </button>
     </div>
 
     <div class="table-wrap">
@@ -666,8 +666,7 @@
       </td>
       <td>
         <div class="actions" style="display: flex; gap: 8px; align-items: center;">
-          <!-- Tombol Edit -->
-          <button type="button" class="action-btn edit" onclick="alert('Fitur edit menu')" style="background: #e0f2fe; color: #0284c7; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: grid; place-items: center;" title="Ubah Menu">
+         <button type="button" class="action-btn edit" onclick="openEditModal({{ $menu->id_menu }})" style="background: #e0f2fe; color: #0284c7; border: none; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: grid; place-items: center;" title="Ubah Menu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
           </button>
 
@@ -689,18 +688,67 @@
     </div>
   </section>
 
-  <!-- ================= MODAL: Tambah / Edit Menu ================= -->
-  <div class="modal" id="menuModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-    <div class="modal-backdrop" data-close-modal></div>
+  <!-- ================= MODAL: Edit Menu (Dipercantik Persis Tambah Menu) ================= -->
+  <div class="modal" id="editMenuModal" role="dialog" aria-modal="true" aria-labelledby="editMenuModalLabel">
+    <div class="modal-backdrop" onclick="document.getElementById('editMenuModal').classList.remove('show'); document.body.style.overflow='';"></div>
     
-    <!-- Kotak Modal Card -->
-    <div class="modal-card">
+    <div class="modal-card" style="max-width: 520px !important; padding: 32px !important;">
       <div class="modal-head">
-        <h2 id="modalTitle">Tambah Menu</h2>
-        <button class="modal-close" type="button" aria-label="Tutup dialog" data-close-modal onclick="document.getElementById('menuModal').classList.remove('show'); document.body.style.overflow='';">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-</button>
+        <h2 id="editMenuModalLabel" style="font-size: 20px !important; font-weight: 800 !important; color: var(--brown) !important; margin: 0 !important;">Edit Menu</h2>
+        <button class="modal-close" type="button" aria-label="Tutup dialog" onclick="document.getElementById('editMenuModal').classList.remove('show'); document.body.style.overflow='';">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
       </div>
+
+      <form id="formEditMenu" method="POST" enctype="multipart/form-data" class="modern-form">
+        @csrf
+        @method('PUT')
+        
+        <div class="form-group">
+          <label for="edit_nama_menu">Nama Menu</label>
+          <input type="text" id="edit_nama_menu" name="nama_menu" required autocomplete="off">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit_kategori">Kategori</label>
+            <select id="edit_kategori" name="kategori" required>
+              <option value="Makanan Utama">Makanan Utama</option>
+              <option value="Minuman">Minuman</option>
+              <option value="Cemilan">Cemilan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_harga">Harga (Rp)</label>
+            <input type="number" id="edit_harga" name="harga" required min="0" step="1000" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit_stok">Stok</label>
+            <input type="number" id="edit_stok" name="stok" required min="0">
+          </div>
+
+          <div class="form-group">
+            <label>Gambar Baru (Opsional)</label>
+            <input type="file" name="gambar" accept=".png, .jpg, .jpeg" style="width: 100% !important; padding: 11px !important; border: 1.5px dashed #94a3b8 !important; border-radius: 10px !important; font-size: 14px !important; background: #f8fafc !important; color: #475569 !important; cursor: pointer !important; box-sizing: border-box !important;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit_deskripsi">Deskripsi Singkat</label>
+          <textarea id="edit_deskripsi" name="deskripsi" rows="2" placeholder="Deskripsi menarik tentang menu..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="document.getElementById('editMenuModal').classList.remove('show'); document.body.style.overflow='';">Batal</button>
+          <button type="submit" class="btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
       <!-- FORM HARUS BERADA DI DALAM MODAL CARD INI -->
       <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data" class="modern-form">
@@ -753,6 +801,67 @@
     </div>
   </div>
 
+  <!-- ================= MODAL: Tambah Menu ================= -->
+<div class="modal" id="menuModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-backdrop" onclick="document.getElementById('menuModal').classList.remove('show'); document.body.style.overflow='';"></div>
+  
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalTitle">Tambah Menu</h2>
+      <button class="modal-close" type="button" aria-label="Tutup dialog" onclick="document.getElementById('menuModal').classList.remove('show'); document.body.style.overflow='';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <form action="{{ route('admin.menu.store') }}" method="POST" enctype="multipart/form-data" class="modern-form">
+      @csrf
+      
+      <div class="form-group">
+        <label for="fieldName">Nama Menu</label>
+        <input type="text" id="fieldName" name="nama_menu" required placeholder="Contoh: Nasi Goreng Spesial" autocomplete="off">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fieldCategory">Kategori</label>
+          <select id="fieldCategory" name="kategori" required>
+            <option value="Makanan Utama">Makanan Utama</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Cemilan">Cemilan</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="fieldPrice">Harga (Rp)</label>
+          <input type="number" id="fieldPrice" name="harga" required min="0" step="1000" placeholder="22000" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fieldStock">Stok Awal</label>
+          <input type="number" id="fieldStock" name="stok" required min="0" value="10">
+        </div>
+
+        <div class="form-group">
+          <label>Upload Foto (.PNG, .JPG)</label>
+          <input type="file" name="gambar" accept=".png, .jpg, .jpeg" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Deskripsi Singkat</label>
+        <textarea name="deskripsi" rows="2" placeholder="Deskripsi menarik tentang menu..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="document.getElementById('menuModal').classList.remove('show'); document.body.style.overflow='';">Batal</button>
+        <button type="submit" class="btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   <!-- ================= MODAL: Konfirmasi Hapus ================= -->
   <div class="modal" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
     <div class="modal-backdrop" data-close-confirm></div>
@@ -774,6 +883,52 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal Edit Menu -->
+<div class="modal fade" id="editMenuModal" tabindex="-1" aria-labelledby="editMenuModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="formEditMenu" method="POST" enctype="multipart/form-data">
+      @csrf
+      @method('PUT')
+      <div class="modal-content" style="border-radius: 12px; padding: 20px;">
+        <div class="modal-header" style="border-bottom: 1px solid var(--line); padding-bottom: 12px; margin-bottom: 16px;">
+          <h5 class="modal-title" id="editMenuModalLabel" style="font-weight: 700; color: var(--brown);">Edit Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Nama Menu</label>
+            <input type="text" class="form-control" id="edit_nama_menu" name="nama_menu" required style="border-radius: 8px;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Kategori</label>
+            <input type="text" class="form-control" id="edit_kategori" name="kategori" required style="border-radius: 8px;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Harga (Rp)</label>
+            <input type="number" class="form-control" id="edit_harga" name="harga" required style="border-radius: 8px;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Stok</label>
+            <input type="number" class="form-control" id="edit_stok" name="stok" required style="border-radius: 8px;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Gambar Baru (Opsional)</label>
+            <input type="file" class="form-control" name="gambar" style="border-radius: 8px;">
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-weight: 600; font-size: 14px;">Deskripsi</label>
+            <textarea class="form-control" id="edit_deskripsi" name="deskripsi" rows="2" style="border-radius: 8px;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="border-top: 1px solid var(--line); padding-top: 16px; margin-top: 16px; display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 8px;">Batal</button>
+          <button type="submit" class="btn btn-primary" style="background: var(--brown); border: none; border-radius: 8px;">Simpan Perubahan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
  <!-- ================= MODAL: Atur Landing Page ================= -->
 <div class="modal" id="landingConfigModal" role="dialog" aria-modal="true" aria-labelledby="landingModalTitle">
@@ -878,388 +1033,74 @@
 
 @section('custom-js')
 <script>
-  (function () {
-    'use strict';
+  // Fungsi untuk membuka modal Edit dan mengambil data menu via AJAX dari database
+  function openEditModal(id) {
+    fetch('/admin/menu/' + id + '/edit')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('edit_nama_menu').value = data.nama_menu;
+        document.getElementById('edit_kategori').value = data.kategori;
+        document.getElementById('edit_harga').value = data.harga;
+        document.getElementById('edit_stok').value = data.stok;
+        document.getElementById('edit_deskripsi').value = data.deskripsi || '';
+        
+        // Arahkan action form ke route update menu yang bersangkutan
+        document.getElementById('formEditMenu').action = '/admin/menu/' + id;
+        
+        // Tampilkan modal edit
+        document.getElementById('editMenuModal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+      })
+      .catch(error => console.error('Error:', error));
+  }
 
-    var STORAGE_KEY = 'sadena.menus.v1';
-
-    var DEFAULT_MENUS = [
-      { id: 1, name: 'Nasi Goreng Spesial', category: 'Makanan Utama', price: 22000, stok: 10, gambar: null },
-      { id: 2, name: 'Ayam Bakar Madu',     category: 'Makanan Utama', price: 28000, stok: 0,  gambar: null },
-      { id: 3, name: 'Jus Alpukat',         category: 'Minuman',       price: 12000, stok: 15, gambar: null },
-      { id: 4, name: 'Kentang Goreng Keju', category: 'Cemilan',       price: 15000, stok: 8,  gambar: null }
-    ];
-
-    var ICON_BY_CATEGORY = {
-      'Makanan Utama': 'rice',
-      'Minuman': 'juice',
-      'Cemilan': 'fries'
-    };
-
-    function loadMenus() {
-      try {
-        var raw = window.localStorage.getItem(STORAGE_KEY);
-        if (!raw) return DEFAULT_MENUS.slice();
-        var parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return DEFAULT_MENUS.slice();
-        return parsed.filter(function (m) {
-          return m && typeof m.id === 'number' && typeof m.name === 'string' &&
-                 typeof m.category === 'string' && typeof m.price === 'number';
-        });
-      } catch (err) {
-        return DEFAULT_MENUS.slice();
-      }
-    }
-
-    function saveMenus() {
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(menus));
-      } catch (err) {}
-    }
-
-    var menus = loadMenus();
-
-    var toastEl = document.getElementById('toast');
-    var toastTimer = null;
-
-    function showToast(message) {
-      if (!toastEl) return;
-      toastEl.textContent = message;
-      toastEl.classList.add('show');
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(function () {
-        toastEl.classList.remove('show');
-      }, 2200);
-    }
-
-    function escapeHtml(str) {
-      return String(str).replace(/[&<>"']/g, function (ch) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
-      });
-    }
-
-    function formatRupiah(num) {
-      return 'Rp ' + Number(num).toLocaleString('id-ID');
-    }
-
-    function iconSvg(type) {
-      switch (type) {
-        case 'rice':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a9 9 0 0 1-9 9 9 9 0 0 1-9-9z"/><path d="M8 8c0-1.6 1-2.6 2-3.2M12 7.5c0-2 1.5-3 2.5-3.5"/></svg>';
-        case 'chicken':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3a5.5 5.5 0 0 0-5.2 7.3l-5 5a2.5 2.5 0 1 0 3.4 3.4l5-5A5.5 5.5 0 1 0 15.5 3z"/><circle cx="15.5" cy="8.5" r="1.2"/></svg>';
-        case 'juice':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5h12l-1.4 8.2a4 4 0 0 1-3.9 3.3h-1.4a4 4 0 0 1-3.9-3.3z"/><path d="M12 16.5V21M9 21h6"/></svg>';
-        case 'fries':
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10h12l-1 11H7z"/><path d="M9 10V5M12 10V4M15 10V6"/></svg>';
-        default:
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>';
-      }
-    }
-
-    var tbody = document.getElementById('menuTableBody');
-    var emptyState = document.getElementById('emptyState');
+  document.addEventListener("DOMContentLoaded", function () {
     var searchInput = document.getElementById('searchInput');
     var categoryFilter = document.getElementById('categoryFilter');
-    var totalMenuEl = document.getElementById('totalMenu');
-    var menuAktifEl = document.getElementById('menuAktif');
-    var stokHabisEl = document.getElementById('stokHabis');
 
-    function updateStats() {
-      if (!totalMenuEl) return;
-      var total = menus.length;
-      var aktif = menus.filter(function (m) { return m.available; }).length;
-      totalMenuEl.textContent = total;
-      menuAktifEl.textContent = aktif;
-      stokHabisEl.textContent = total - aktif;
-    }
-
-    function renderTable() {
-      if (!tbody) return;
-      var query = searchInput.value.trim().toLowerCase();
-      var catVal = categoryFilter.value;
-
-      var filtered = menus.filter(function (m) {
-        var matchQuery = !query || m.name.toLowerCase().indexOf(query) !== -1;
-        var matchCat = catVal === 'all' || m.category === catVal;
-        return matchQuery && matchCat;
-      });
-
-      tbody.innerHTML = '';
-      updateStats();
-
-      if (filtered.length === 0) {
-        emptyState.classList.add('show');
-        return;
-      }
-      emptyState.classList.remove('show');
-
-      var html = filtered.map(function (menu) {
-        var safeName = escapeHtml(menu.name);
-        
-        // Menentukan tampilan stok berupa angka sesuai permintaan ketua tim
-        var stokVal = menu.stok !== undefined ? menu.stok : 10; 
-        var stokText = stokVal > 0 ? 'Tersedia (Stok: ' + stokVal + ')' : 'Habis (Stok: 0)';
-        var stokColor = stokVal > 0 ? 'color: var(--green); font-weight: 700;' : 'color: var(--red); font-weight: 700;';
-
-        // Mengganti total ikon SVG dengan foto asli dari folder storage
-        var thumbHtml = menu.gambar 
-          ? '<img src="/storage/' + menu.gambar + '" alt="' + safeName + '" style="width: 55px; height: 50px; border-radius: 10px; object-fit: cover;">'
-          : '<div style="width: 55px; height: 50px; border-radius: 10px; background: #f1f5f9; display: grid; place-items: center; font-size: 20px;">🍽️</div>';
-
-        return '<tr>' +
-          '<td><div class="menu-cell">' + thumbHtml + '<span class="menu-name">' + safeName + '</span></div></td>' +
-          '<td><span class="chip">' + escapeHtml(menu.category) + '</span></td>' +
-          '<td class="price">' + formatRupiah(menu.price) + '</td>' +
-          '<td><span style="' + stokColor + '">' + stokText + '</span></td>' +
-          '<td>' +
-            '<div class="actions">' +
-              '<button type="button" class="action-btn edit" data-action="edit" data-id="' + menu.id + '" aria-label="Ubah ' + safeName + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>' +
-              '</button>' +
-              '<button type="button" class="action-btn delete" data-action="delete" data-id="' + menu.id + '" aria-label="Hapus ' + safeName + '">' +
-                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
-              '</button>' +
-            '</div>' +
-          '</td>' +
-        '</tr>';
-      }).join('');
-
-      tbody.innerHTML = html;
-    }
-
-    if (tbody) {
-      tbody.addEventListener('change', function (event) {
-        var input = event.target.closest('[data-toggle]');
-        if (!input) return;
-
-        var id = parseInt(input.getAttribute('data-toggle'), 10);
-        var menu = menus.find(function (m) { return m.id === id; });
-        if (!menu) return;
-
-        menu.available = input.checked;
-
-        var label = tbody.querySelector('[data-status="' + id + '"]');
-        if (label) {
-          label.textContent = menu.available ? 'Tersedia' : 'Habis';
-          label.classList.toggle('available', menu.available);
-          label.classList.toggle('out', !menu.available);
-        }
-
-        updateStats();
-        saveMenus();
-        showToast(menu.name + ' — ' + (menu.available ? 'Tersedia' : 'Habis'));
-      });
-
-      tbody.addEventListener('click', function (event) {
-        var btn = event.target.closest('[data-action]');
-        if (!btn) return;
-
-        var action = btn.getAttribute('data-action');
-        var id = parseInt(btn.getAttribute('data-id'), 10);
-        var menu = menus.find(function (m) { return m.id === id; });
-        if (!menu) return;
-
-        if (action === 'edit') {
-          openModal(menu);
-        } else if (action === 'delete') {
-          openConfirm(menu);
-        }
-      });
-    }
-
-    if (searchInput) searchInput.addEventListener('input', renderTable);
-    if (categoryFilter) categoryFilter.addEventListener('change', renderTable);
-
-    /* Modal Tambah/Edit */
-    var modal = document.getElementById('menuModal');
-    var modalTitle = document.getElementById('modalTitle');
-    var form = document.getElementById('menuForm');
-    var fieldName = document.getElementById('fieldName');
-    var fieldCategory = document.getElementById('fieldCategory');
-    var fieldPrice = document.getElementById('fieldPrice');
-    var fieldStock = document.getElementById('fieldStock');
-    var addMenuBtn = document.getElementById('addMenuBtn');
-    var editingId = null;
-    var lastFocused = null;
-
-    function syncBodyScroll() {
-      var anyOpen = document.querySelector('.modal.show');
-      document.body.style.overflow = anyOpen ? 'hidden' : '';
-    }
-
-    function openModal(menu) {
-      lastFocused = document.activeElement;
-
-      if (menu) {
-        editingId = menu.id;
-        modalTitle.textContent = 'Ubah Menu';
-        fieldName.value = menu.name;
-        fieldCategory.value = menu.category;
-        fieldPrice.value = menu.price;
-        fieldStock.value = menu.available ? 'true' : 'false';
-      } else {
-        editingId = null;
-        modalTitle.textContent = 'Tambah Menu';
-        form.reset();
-        fieldStock.value = 'true';
-      }
-
-      fieldName.classList.remove('invalid');
-      fieldPrice.classList.remove('invalid');
-
-      modal.classList.add('show');
-      syncBodyScroll();
-      window.setTimeout(function () { fieldName.focus(); }, 100);
-    }
-
-    function closeModal() {
-
-      modal.classList.remove('show');
-      editingId = null;
-      syncBodyScroll();
-      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
-    }
-
-    if (addMenuBtn) addMenuBtn.addEventListener('click', function () { openModal(null); });
-
-    Array.prototype.forEach.call(modal.querySelectorAll('[data-close-modal]'), function (el) {
-      el.addEventListener('click', closeModal);
-    });
-
-    [fieldName, fieldPrice].forEach(function (input) {
-      input.addEventListener('input', function () { input.classList.remove('invalid'); });
-    });
-
-    form.addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      var name = fieldName.value.trim();
-      var category = fieldCategory.value;
-      var price = parseInt(fieldPrice.value, 10);
-      var available = fieldStock.value === 'true';
-
-      if (!name) {
-        fieldName.classList.add('invalid');
-        fieldName.focus();
-        showToast('Nama menu wajib diisi');
-        return;
-      }
-
-      if (!price || price <= 0 || isNaN(price)) {
-        fieldPrice.classList.add('invalid');
-        fieldPrice.focus();
-        showToast('Harga harus lebih dari 0');
-        return;
-      }
-
-      if (editingId === null) {
-        var newId = menus.length
-          ? Math.max.apply(null, menus.map(function (m) { return m.id; })) + 1
-          : 1;
-
-        menus.push({
-          id: newId,
-          name: name,
-          category: category,
-          price: price,
-          available: available,
-          icon: ICON_BY_CATEGORY[category] || 'rice'
+    // Filter pencarian tabel menu berdasarkan database
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        var query = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#menuTableBody tr');
+        rows.forEach(function (row) {
+          var nameElement = row.querySelector('.menu-name');
+          if (nameElement) {
+            var name = nameElement.textContent.toLowerCase();
+            row.style.display = name.includes(query) ? '' : 'none';
+          }
         });
-        showToast('Menu "' + name + '" ditambahkan');
-      } else {
-        var target = menus.find(function (m) { return m.id === editingId; });
-        if (target) {
-          target.name = name;
-          target.category = category;
-          target.price = price;
-          target.available = available;
-          target.icon = ICON_BY_CATEGORY[category] || target.icon;
-          showToast('Menu "' + name + '" diperbarui');
-        }
-      }
-
-      saveMenus();
-      closeModal();
-      renderTable();
-    });
-
-    /* Modal Hapus */
-    var confirmModal = document.getElementById('confirmModal');
-    var confirmText = document.getElementById('confirmText');
-    var confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-    var pendingDeleteId = null;
-
-    function openConfirm(menu) {
-      pendingDeleteId = menu.id;
-      confirmText.innerHTML = 'Apakah Anda yakin ingin menghapus menu <strong>' +
-        escapeHtml(menu.name) + '</strong>? Tindakan ini tidak dapat dibatalkan.';
-      confirmModal.classList.add('show');
-      syncBodyScroll();
-      window.setTimeout(function () { confirmDeleteBtn.focus(); }, 100);
-    }
-
-    function closeConfirm() {
-      confirmModal.classList.remove('show');
-      pendingDeleteId = null;
-      syncBodyScroll();
-    }
-
-    Array.prototype.forEach.call(confirmModal.querySelectorAll('[data-close-confirm]'), function (el) {
-      el.addEventListener('click', closeConfirm);
-    });
-
-    confirmDeleteBtn.addEventListener('click', function () {
-      var menu = menus.find(function (m) { return m.id === pendingDeleteId; });
-      if (!menu) { closeConfirm(); return; }
-
-      menus = menus.filter(function (m) { return m.id !== menu.id; });
-      saveMenus();
-      closeConfirm();
-      renderTable();
-      showToast('Menu "' + menu.name + '" dihapus');
-    });
-
-    document.addEventListener('keydown', function (event) {
-      if (event.key !== 'Escape') return;
-
-      if (confirmModal.classList.contains('show')) {
-        closeConfirm();
-      } else if (modal.classList.contains('show')) {
-        closeModal();
-      }
-    });
-
-    var modal = document.getElementById('menuModal');
-    var addMenuBtn = document.getElementById('addMenuBtn');
-    
-    if (addMenuBtn) {
-      addMenuBtn.addEventListener('click', function () {
-        if (modal) {
-          modal.classList.add('show');
-          document.body.style.overflow = 'hidden';
-        }
       });
     }
 
-    // Tombol tutup modal (Batal / ikon X / klik luar)
-    var closeElements = document.querySelectorAll('[data-close-modal], .modal-backdrop');
-    closeElements.forEach(function (el) {
-      el.addEventListener('click', function () {
-        if (modal) {
+    // Filter kategori tabel menu berdasarkan database
+    if (categoryFilter) {
+      categoryFilter.addEventListener('change', function () {
+        var cat = this.value;
+        var rows = document.querySelectorAll('#menuTableBody tr');
+        rows.forEach(function (row) {
+          var chipElement = row.querySelector('.chip');
+          if (chipElement) {
+            var category = chipElement.textContent.trim();
+            if (cat === 'all' || category === cat) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          }
+        });
+      });
+    }
+
+    // Tombol Escape di keyboard untuk menutup semua modal yang terbuka
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') {
+        document.querySelectorAll('.modal').forEach(function (modal) {
           modal.classList.remove('show');
-          document.body.style.overflow = '';
-        }
-      });
-    });
-
-    / Tombol Escape di keyboard untuk menutup modal
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && modal) {
-        modal.classList.remove('show');
+        });
         document.body.style.overflow = '';
       }
     });
-  })();
+  });
 </script>
 @endsection

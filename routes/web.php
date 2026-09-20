@@ -67,6 +67,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/menu', [MenuController::class, 'index'])->name('admin.menu');
     Route::post('/admin/menu', [MenuController::class, 'store'])->name('admin.menu.store');
     Route::delete('/admin/menu/{id}', [MenuController::class, 'destroy'])->name('admin.menu.destroy');
+    Route::get('/admin/menu/{id}/edit', [MenuController::class, 'edit'])->name('admin.menu.edit');
+Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
 
     Route::get('/admin/pelanggan', function () {
     return view('admin.pelanggan');

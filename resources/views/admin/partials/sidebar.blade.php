@@ -22,17 +22,6 @@
       <span>Dashboard</span>
     </a>
 
-    <!-- Menu Semua Pesanan -->
-    <a class="nav-item {{ request()->routeIs('admin.pemesanan*') ? 'active' : '' }}" href="{{ route('admin.pemesanan') }}">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
-    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
-    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
-  </svg>
-  <span>Semua Pesanan</span>
-</a>
-
     <!-- Menu Manajemen Menu -->
     <a class="nav-item {{ request()->routeIs('admin.menu*') ? 'active' : '' }}" href="{{ route('admin.menu') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
