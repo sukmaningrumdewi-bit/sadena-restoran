@@ -10,8 +10,7 @@ use App\Http\Controllers\UserDashboardController;
 use App\Http\Controllers\UserReservasiController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\LaporanController;
-
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+use App\Http\Controllers\UserFavoriteController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -44,15 +43,15 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // 1. Halaman Login Admin
 Route::get('/admin', function () {
-    return view('admin.index'); // Pastikan file view admin index-nya ada
+    return view('admin.index');
 })->name('admin.login');
 
-// 2. Halaman Login User
+// 2. Halaman Login User (DIPERBARUI)
 Route::get('/user', function () {
-    return view('user.login'); // Mengarah ke resources/views/user/login.blade.php
-})->name('user.login');
+    return view('user.login'); 
+})->name('user.login'); // <-- Diubah menjadi 'user.login'
 
-// Proses Login POST (Menggunakan method login AuthController untuk memproses data keduanya)
+// Proses Login POST
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 Route::post('/user/login', [AuthController::class, 'login'])->name('user.login.post');
 Route::post('/login-proses', [AuthController::class, 'login'])->name('login.proses');
@@ -60,9 +59,7 @@ Route::post('/login-proses', [AuthController::class, 'login'])->name('login.pros
 // Dashboard Admin & User (Dilindungi middleware)
 Route::middleware(['auth'])->group(function () {
     // ---- ADMIN ROUTES ----
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/admin/pemesanan', function () {
         return view('admin.pemesanan');
@@ -72,38 +69,37 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/menu', [MenuController::class, 'store'])->name('admin.menu.store');
     Route::delete('/admin/menu/{id}', [MenuController::class, 'destroy'])->name('admin.menu.destroy');
     Route::get('/admin/menu/{id}/edit', [MenuController::class, 'edit'])->name('admin.menu.edit');
-Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
+    Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
 
     Route::get('/admin/pelanggan', function () {
-    return view('admin.pelanggan');
+        return view('admin.pelanggan');
     })->name('admin.pelanggan');
 
-    Route::get('/admin/laporan', function () {
-    return view('admin.laporan');
-    })->name('admin.laporan');
+    Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
 
     Route::get('/admin/pengaturan', function () {
-    return view('admin.pengaturan');
+        return view('admin.pengaturan');
     })->name('admin.pengaturan');
 
 
     // ---- USER ROUTES ----
     Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-
+    
+    // Route Favorit
+    Route::get('/user/favorit', [UserFavoriteController::class, 'index'])->name('user.favorit');
+    Route::post('/user/favorit/toggle', [UserFavoriteController::class, 'toggle'])->name('user.favorit.toggle');
+ 
     Route::get('/user/pesanan', function () {
         return view('user.pesanan'); 
     })->name('user.pesanan');
 
-    Route::get('/user/favorit', function () {
-        return view('user.favorit'); 
-    })->name('user.favorit');
+    // Route Reservasi User
+    Route::get('/user/reservasi', [UserReservasiController::class, 'index'])->name('user.reservasi');
+    Route::post('/user/reservasi', [UserReservasiController::class, 'store'])->name('user.reservasi.store');
 
+    Route::get('/user/profile', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
 
     // Proses Logout bersama
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-Route::get('/user/reservasi', [UserReservasiController::class, 'index'])->name('user.reservasi');
-Route::get('/user/profile', [UserProfileController::class, 'index'])->name('user.profile');
-Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
-Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');

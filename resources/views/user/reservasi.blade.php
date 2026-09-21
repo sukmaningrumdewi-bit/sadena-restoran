@@ -42,6 +42,7 @@
     color: #1e293b;
     outline: none;
     transition: border-color 0.2s;
+    box-sizing: border-box;
   }
 
   .form-group input:focus, .form-group select:focus {
@@ -66,7 +67,6 @@
     background: #350e06;
   }
 
-  /* List Reservasi */
   .res-list {
     display: flex;
     flex-direction: column;
@@ -92,6 +92,17 @@
 
   .status-pending { background: #fef3c7; color: #d97706; }
   .status-confirmed { background: #dcfce7; color: #16a34a; }
+  .status-rejected { background: #fee2e2; color: #dc2626; }
+
+  .alert-success {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 600;
+  }
 
   @media (max-width: 1024px) {
     .reservasi-layout {
@@ -107,6 +118,12 @@
   <p style="margin: 6px 0 0; font-size: 15px; color: #7a5c50;">Pesan tempat untuk momen spesialmu di Sadena</p>
 </div>
 
+@if(session('success'))
+  <div class="alert-success">
+    {{ session('success') }}
+  </div>
+@endif
+
 <div class="reservasi-layout">
   
   <!-- KIRI: FORM PENGAJUAN RESERVASI -->
@@ -115,12 +132,12 @@
       Buat Reservasi Baru
     </h2>
     
-    <form action="#" method="POST">
+    <form action="{{ route('user.reservasi.store') }}" method="POST">
       @csrf
       
       <div class="form-group">
         <label>Tanggal Kedatangan</label>
-        <input type="date" name="tanggal" required>
+        <input type="date" name="tanggal" min="{{ date('Y-m-d') }}" required>
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -138,10 +155,10 @@
         <label>Pilihan Meja / Area</label>
         <select name="area" required>
           <option value="" disabled selected>Pilih area...</option>
-          <option value="indoor_standar">Indoor Standar (2-4 Orang)</option>
-          <option value="indoor_vip">Indoor VIP (Maks 10 Orang)</option>
-          <option value="outdoor_balkon">Outdoor Balkon (2-4 Orang)</option>
-          <option value="outdoor_taman">Outdoor Taman (Besar)</option>
+          <option value="Indoor Standar (2-4 Orang)">Indoor Standar (2-4 Orang)</option>
+          <option value="Indoor VIP (Maks 10 Orang)">Indoor VIP (Maks 10 Orang)</option>
+          <option value="Outdoor Balkon (2-4 Orang)">Outdoor Balkon (2-4 Orang)</option>
+          <option value="Outdoor Taman (Besar)">Outdoor Taman (Besar)</option>
         </select>
       </div>
 
@@ -150,7 +167,7 @@
         <input type="text" name="catatan" placeholder="Misal: Ulang tahun, minta kursi bayi...">
       </div>
 
-      <button type="button" class="btn-submit" onclick="alert('Fitur simpan reservasi belum dihubungkan ke database!')">
+      <button type="submit" class="btn-submit">
         Ajukan Reservasi
       </button>
     </form>
@@ -163,33 +180,33 @@
     </h2>
 
     <div class="res-list">
-      
-      <!-- Contoh Reservasi 1 (Disetujui) -->
-      <div class="res-item">
-        <div>
-          <div style="font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px;">RES-00129</div>
-          <div style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">Besok, 19:00 WIB</div>
-          <div style="font-size: 13.5px; color: #475569;">Indoor VIP • 8 Orang</div>
+      @forelse($reservations as $res)
+        <div class="res-item">
+          <div>
+            <div style="font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px;">{{ $res->kode_reservasi }}</div>
+            <div style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">
+              {{ \Carbon\Carbon::parse($res->tanggal)->translatedFormat('d M Y') }}, {{ \Carbon\Carbon::parse($res->waktu)->format('H:i') }} WIB
+            </div>
+            <div style="font-size: 13.5px; color: #475569;">{{ $res->area }} • {{ $res->jumlah_orang }} Orang</div>
+            @if($res->catatan)
+              <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">Catatan: {{ $res->catatan }}</div>
+            @endif
+          </div>
+          <div style="text-align: right;">
+            @if($res->status == 'pending')
+              <span class="res-status status-pending">Menunggu Konfirmasi</span>
+            @elseif($res->status == 'confirmed')
+              <span class="res-status status-confirmed">Disetujui</span>
+            @else
+              <span class="res-status status-rejected">Ditolak</span>
+            @endif
+          </div>
         </div>
-        <div style="text-align: right;">
-          <span class="res-status status-confirmed">Disetujui</span>
+      @empty
+        <div style="text-align: center; color: #94a3b8; font-size: 14px; padding: 40px 0;">
+          Belum ada data reservasi.
         </div>
-      </div>
-
-      <!-- Contoh Reservasi 2 (Menunggu) -->
-      <div class="res-item">
-        <div>
-          <div style="font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 4px;">RES-00135</div>
-          <div style="font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 4px;">15 Okt 2026, 12:30 WIB</div>
-          <div style="font-size: 13.5px; color: #475569;">Outdoor Taman • 4 Orang</div>
-        </div>
-        <div style="text-align: right;">
-          <span class="res-status status-pending">Menunggu Konfirmasi</span>
-        </div>
-      </div>
-
-      <!-- Pesan jika kosong (disembunyikan dulu sementara karena ada contoh di atas) -->
-      <!-- <div style="text-align: center; color: #94a3b8; font-size: 14px; padding: 40px 0;">Belum ada data reservasi.</div> -->
+      @endforelse
     </div>
   </div>
 

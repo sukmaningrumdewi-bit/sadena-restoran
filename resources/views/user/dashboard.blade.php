@@ -3,32 +3,30 @@
 @section('title', 'Buat Pesanan — Sadena')
 
 @section('custom-css')
+<!-- CSRF Token untuk request AJAX -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <style>
   /* ============================================================
      RESPONSIVE LAYOUT & STYLING (Diperbaiki untuk Desktop)
      ============================================================ */
 
-  /* MENDOBRAK BATAS LEBAR DARI KERANGKA APP.BLADE.PHP */
   .content {
-    max-width: 1400px !important; /* Melebarkan batas dari 960px menjadi 1400px */
+    max-width: 1400px !important;
   }
   
-  /* Memaksa agar konten rata kiri dan mengambil 100% lebar dari bungkusnya */
   .dashboard-wrapper {
     width: 100%;
     text-align: left !important;
   }
 
-  /* Layout 2 kolom: Kiri (Fleksibel), Kanan (Fix 360px) */
   .dashboard-layout {
     display: grid;
-    /* minmax(0, 1fr) memaksa grid kiri agar tidak overflow dan fleksibel */
     grid-template-columns: minmax(0, 1fr) 360px; 
     gap: 30px;
     align-items: start;
   }
 
-  /* Grid untuk kotak-kotak menu */
   .menu-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -38,21 +36,40 @@
     padding-right: 12px;
   }
 
-  /* Kustomisasi scrollbar agar cantik di desktop */
   .menu-grid::-webkit-scrollbar { width: 6px; }
   .menu-grid::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
   .menu-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-  /* Teks judul dikembalikan ke kiri */
   .page-header {
     margin-bottom: 24px;
     text-align: left !important;
   }
 
-  /* --- ADAPTASI UNTUK LAYAR KECIL (TABLET & HP) --- */
+  /* Style Tombol Favorit (Love) */
+  .fav-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    z-index: 5;
+    transition: transform 0.2s;
+  }
+  .fav-btn:hover {
+    transform: scale(1.1);
+  }
+
   @media (max-width: 1024px) {
     .dashboard-layout {
-      grid-template-columns: 1fr; /* Berubah jadi 1 kolom di layar kecil */
+      grid-template-columns: 1fr;
     }
     .menu-grid {
       max-height: none; 
@@ -80,13 +97,11 @@
     <p style="margin: 6px 0 0; font-size: 15px; color: #7a5c50;">Silakan pilih menu dan atur jumlah pesanan di bawah ini</p>
   </div>
 
-  <!-- Layout Utama -->
   <div class="dashboard-layout">
 
     <!-- ================= KOLOM KIRI: DAFTAR MENU & FILTER ================= -->
     <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
       
-      <!-- Toolbar Filter & Cari -->
       <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
         <div style="position: relative; flex: 1; min-width: 200px;">
           <input type="search" id="userSearchInput" placeholder="Cari menu..." style="width: 100%; height: 44px; padding: 0 16px 0 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; text-align: left;">
@@ -108,12 +123,19 @@
       <div id="userMenuGrid" class="menu-grid">
         @foreach($menus as $menu)
           @php
-             $isHabis =$menu->stok <= 0;
-          @endphp
+    $isHabis = $menu->stok <= 0;
+    // Cek apakah id_menu ada di dalam array $favoriteMenuIds dari controller
+    $isFav = in_array($menu->id_menu, $favoriteMenuIds ?? []);
+@endphp
           
           <div class="menu-card" data-name="{{ strtolower($menu->nama_menu) }}" data-category="{{ $menu->kategori }}" 
-               style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; background: #fcfdfd; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; opacity: {{ $isHabis ? '0.6' : '1' }}; filter: {{ $isHabis ? 'grayscale(80%)' : 'none' }}; text-align: left;">
+               style="position: relative; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; background: #fcfdfd; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; opacity: {{ $isHabis ? '0.6' : '1' }}; filter: {{ $isHabis ? 'grayscale(80%)' : 'none' }}; text-align: left;">
             
+            <!-- Tombol Favorit (Love) -->
+            <button type="button" class="fav-btn" onclick="toggleFavorite({{ $menu->id_menu }}, this)" title="Sukai / Batal Sukai">
+              <span class="heart-icon" style="font-size: 16px;">{{ $isFav ? '❤️' : '🤍' }}</span>
+            </button>
+
             <div>
               @if($menu->gambar)
                 <img src="{{ asset('storage/' . $menu->gambar) }}" alt="{{ $menu->nama_menu }}" style="width: 100%; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">
@@ -132,7 +154,8 @@
               </div>
               
               @if(!$isHabis)
-                <button type="button" onclick="addToCart({{ $menu->id_menu }}, '{{ $menu->nama_menu }}', {{$menu->harga }})" style="width: 100%; height: 36px; background: #461309; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s;">
+                <button type="button" onclick="addToCart({{ $menu->id_menu }}, '{{ $menu->nama_menu }}', {{$menu->harga }})" 
+                        style="width: 100%; height: 36px; background: #461309; color: #ffffff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s;">
                   + Tambah
                 </button>
               @else
@@ -248,6 +271,36 @@
     checkoutBtn.style.background = '#461309';
     checkoutBtn.style.color = '#fff';
     checkoutBtn.style.cursor = 'pointer';
+  }
+
+  // Fungsi toggleFavorit() AJAX
+  function toggleFavorite(menuId, btn) {
+    const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+    if (!tokenMeta) {
+      console.error('CSRF Token Meta tag tidak ditemukan!');
+      return;
+    }
+
+    const token = tokenMeta.getAttribute('content');
+    const heart = btn.querySelector('.heart-icon');
+
+    fetch("{{ route('user.favorit.toggle') }}", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': token
+      },
+      body: JSON.stringify({ id_menu: menuId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'added') {
+        heart.textContent = '❤️';
+      } else if (data.status === 'removed') {
+        heart.textContent = '🤍';
+      }
+    })
+    .catch(err => console.error(err));
   }
 
   document.addEventListener("DOMContentLoaded", function () {
