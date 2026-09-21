@@ -46,8 +46,8 @@
 </script>
   </section>
 
-  <!-- STATISTIK FULL MONITORING (Hanya 2 Kotak: Total Pendapatan & Menu Tersedia) -->
-  <section class="stats" aria-label="Ringkasan statistik" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 28px;">
+  <!-- STATISTIK FULL MONITORING (Ubah grid menjadi 3 kolom) -->
+  <section class="stats" aria-label="Ringkasan statistik" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 28px;">
     
     <!-- 1. Total Seluruh Pendapatan -->
     <article class="stat-card" style="background: #fff; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
@@ -60,7 +60,7 @@
       </span>
       <div class="stat-text">
         <p class="stat-label" style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Total Seluruh Pendapatan</p>
-        <p class="stat-value" style="font-size: 26px; font-weight: 800; color: #1e293b;">Rp {{ number_format($totalPendapatan ?? 1450000, 0, ',', '.') }}</p>
+        <p class="stat-value" style="font-size: 26px; font-weight: 800; color: #1e293b;">Rp {{ number_format($totalPendapatan ?? 0, 0, ',', '.') }}</p>
       </div>
     </article>
 
@@ -75,7 +75,23 @@
       </span>
       <div class="stat-text">
         <p class="stat-label" style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Menu Aktif Tersedia</p>
-        <p class="stat-value" style="font-size: 26px; font-weight: 800; color: #1e293b;">{{ $menuTersedia ?? 42 }} Menu</p>
+        <p class="stat-value" style="font-size: 26px; font-weight: 800; color: #1e293b;">{{ $menuTersedia ?? 0 }} Menu</p>
+      </div>
+    </article>
+
+    <!-- 3. KOTAK BARU: Total Pengguna Web -->
+    <article class="stat-card" style="background: #fff; padding: 24px; border-radius: 14px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      <span class="stat-icon purple" aria-hidden="true" style="background: #faf5ff; padding: 16px; border-radius: 12px; color: #9333ea; display: grid; place-items: center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px;">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </span>
+      <div class="stat-text">
+        <p class="stat-label" style="color: #64748b; font-size: 14px; font-weight: 600; margin-bottom: 4px;">Total Pengguna Web</p>
+        <p class="stat-value" style="font-size: 26px; font-weight: 800; color: #1e293b;">{{ $totalPengguna ?? 0 }} User</p>
       </div>
     </article>
 

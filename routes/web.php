@@ -6,11 +6,11 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserDashboardController;
-use App\Http\Controllers\UserReservasiController;
-use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\LaporanController;
-use App\Http\Controllers\UserFavoriteController;
+use App\Http\Controllers\ManajemenAkunController;
+use App\Http\Controllers\AdminPengaturanController;
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -71,9 +71,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/menu/{id}/edit', [MenuController::class, 'edit'])->name('admin.menu.edit');
     Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
 
-    Route::get('/admin/pelanggan', function () {
-        return view('admin.pelanggan');
-    })->name('admin.pelanggan');
+    Route::get('/admin/manajemen-akun', function () {
+    return view('admin.manajemen_akun'); // <-- Ubah jadi pakai underscore (_)
+})->name('admin.manajemen-akun');
 
     Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
 
@@ -81,14 +81,22 @@ Route::middleware(['auth'])->group(function () {
         return view('admin.pengaturan');
     })->name('admin.pengaturan');
 
+    Route::put('/admin/pengaturan/profil', [AdminPengaturanController::class, 'updateProfile'])->name('admin.pengaturan.updateProfile');
+    Route::put('/admin/pengaturan/password', [AdminPengaturanController::class, 'updatePassword'])->name('admin.pengaturan.updatePassword');
+
+    Route::middleware(['auth'])->group(function () {
+    // Route Manajemen Akun
+    Route::get('/admin/manajemen-akun', [ManajemenAkunController::class, 'index'])->name('admin.manajemen-akun');
+    Route::post('/admin/manajemen-akun', [ManajemenAkunController::class, 'store'])->name('admin.manajemen-akun.store');
+    Route::delete('/admin/manajemen-akun/{id}', [ManajemenAkunController::class, 'destroy'])->name('admin.manajemen-akun.destroy');
+});
+
 
     // ---- USER ROUTES ----
-    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
-    
-    // Route Favorit
-    Route::get('/user/favorit', [UserFavoriteController::class, 'index'])->name('user.favorit');
-    Route::post('/user/favorit/toggle', [UserFavoriteController::class, 'toggle'])->name('user.favorit.toggle');
- 
+    Route::get('/user/dashboard', function () {
+        return view('user.dashboard'); 
+    })->name('user.dashboard');
+
     Route::get('/user/pesanan', function () {
         return view('user.pesanan'); 
     })->name('user.pesanan');

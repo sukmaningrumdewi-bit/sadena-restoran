@@ -4,33 +4,30 @@
 @section('topbar-title', 'Pengaturan Sistem')
 
 @section('custom-css')
+<!-- (Bagian style CSS tetap sama persis seperti milikmu, tidak perlu diubah) -->
 <style>
-  /* =========================================================
-     CSS KHUSUS HALAMAN PENGATURAN
-     ========================================================= */
   .settings-container {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 260px 1fr;
     gap: 24px;
+    align-items: start;
   }
 
-  @media (min-width: 992px) {
+  @media (max-width: 992px) {
     .settings-container {
-      flex-direction: row;
-      align-items: flex-start;
+      grid-template-columns: 1fr;
     }
   }
 
-  .settings-sidebar {
-    flex: 0 0 280px;
-    background: var(--surface);
+  .settings-nav {
+    background: #fff;
     border: 1px solid var(--brown);
     border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow-card);
+    padding: 12px;
+    box-shadow: var(--shadow-panel);
   }
 
-  .tab-btn {
+  .settings-nav-item {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -39,89 +36,84 @@
     background: transparent;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    color: var(--text-muted);
-    text-align: left;
+    color: var(--brown);
     cursor: pointer;
+    text-align: left;
     transition: all 0.2s ease;
-    margin-bottom: 6px;
   }
 
-  .tab-btn:last-child { margin-bottom: 0; }
-  
-  .tab-btn:hover { background: var(--surface-hover); color: var(--brown); }
-  
-  .tab-btn.active {
+  .settings-nav-item:hover {
+    background: rgba(70, 19, 0, 0.05);
+  }
+
+  .settings-nav-item.active {
     background: var(--brown);
     color: #fff;
   }
-  
-  .tab-btn svg { width: 20px; height: 20px; flex: none; }
 
-  .settings-content {
-    flex: 1;
-    background: var(--surface);
+  .settings-nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+  }
+
+  .settings-panel {
+    background: #fff;
     border: 1px solid var(--brown);
     border-radius: var(--radius);
-    padding: 30px;
-    box-shadow: var(--shadow-card);
-    min-width: 0;
+    padding: 28px;
+    box-shadow: var(--shadow-panel);
+    display: none;
   }
 
-  .tab-pane { display: none; animation: fadeIn 0.3s ease; }
-  .tab-pane.active { display: block; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+  .settings-panel.active {
+    display: block;
   }
 
-  .pane-header {
+  .settings-panel h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--brown);
+    margin-bottom: 6px;
+  }
+
+  .settings-panel p {
+    font-size: 14px;
+    color: var(--text-muted);
     margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--line);
   }
 
-  .pane-header h3 { font-size: 20px; font-weight: 700; color: var(--brown); margin-bottom: 4px; }
-  .pane-header p { font-size: 14px; color: var(--text-muted); }
+  .form-group {
+    margin-bottom: 20px;
+  }
 
-  .form-group { margin-bottom: 20px; }
   .form-group label {
     display: block;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     margin-bottom: 8px;
     color: var(--brown);
   }
-  
-  .form-group input, .form-group textarea {
+
+  .form-group input {
     width: 100%;
-    padding: 14px 16px;
-    border: 1px solid var(--line);
+    height: 46px;
+    padding: 0 16px;
+    border: 1.5px solid #cbd5e1;
     border-radius: var(--radius-sm);
-    background: var(--surface);
-    font-size: 15px;
-    font-family: inherit;
-    transition: border-color 0.2s ease;
+    font-size: 14px;
+    background: #fcfdfd;
+    color: var(--brown);
+    transition: all 0.2s ease;
   }
 
-  .form-group textarea { resize: vertical; min-height: 100px; }
-  
-  .form-group input:focus, .form-group textarea:focus {
+  .form-group input:focus {
     outline: none;
     border-color: var(--brown);
-    box-shadow: 0 0 0 3px rgba(70, 19, 0, 0.1);
-  }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  @media (min-width: 640px) {
-    .form-row { grid-template-columns: 1fr 1fr; }
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(70, 19, 0, 0.08);
   }
 
   .btn-primary {
@@ -129,204 +121,223 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    height: 50px;
+    height: 46px;
     padding: 0 24px;
-    background: var(--brown) !important;
-    color: #fff !important;
+    background: var(--brown);
+    color: #fff;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
-    box-shadow: none !important;
-    outline: none !important;
-    transition: transform 0.2s ease;
+    transition: all 0.2s ease;
   }
 
-  .btn-primary:hover, .btn-primary:focus {
+  .btn-primary:hover {
+    background: #350e00;
     transform: translateY(-1px);
   }
 
-  .btn-primary svg { width: 18px; height: 18px; }
+  /* Style untuk Wrapper Password & Icon Mata */
+  .password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
   
-  .form-actions {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--line);
-    text-align: right;
+  .password-wrapper input {
+    padding-right: 44px; /* Memberi ruang agar teks tidak tertutup ikon */
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #94a3b8;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+  
+  .toggle-password:hover {
+    color: var(--brown);
+  }
+  
+  .toggle-password svg {
+    width: 20px;
+    height: 20px;
   }
 </style>
 @endsection
 
 @section('content')
 
+  <!-- Notifikasi Sukses/Error -->
+  @if(session('success'))
+    <div style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        {{ session('success') }}
+    </div>
+  @endif
+
+  @if($errors->any())
+    <div style="background-color: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 16px;">
+        <ul style="margin: 0; padding-left: 20px;">
+            @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+  @endif
+
   <div class="settings-container">
     
-    <!-- Sidebar Tabs -->
-    <aside class="settings-sidebar">
-      <button type="button" class="tab-btn active" data-target="tab-toko">
+    <!-- Navigasi Kiri (Hanya Akun Admin & Keamanan) -->
+    <div class="settings-nav">
+      <button type="button" class="settings-nav-item active" data-target="panel-admin">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        Profil Toko
-      </button>
-      
-      <button type="button" class="tab-btn" data-target="tab-akun">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
         </svg>
         Akun Admin
       </button>
 
-      <button type="button" class="tab-btn" data-target="tab-keamanan">
+      <button type="button" class="settings-nav-item" data-target="panel-security">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
         </svg>
         Keamanan
       </button>
-    </aside>
+    </div>
 
-    <!-- Konten Settings -->
-    <section class="settings-content">
+    <!-- Konten Kanan -->
+    <div>
       
-      <!-- Tab: Profil Toko -->
-      <div class="tab-pane active" id="tab-toko">
-        <div class="pane-header">
-          <h3>Profil Toko</h3>
-          <p>Kelola informasi dasar restoran atau toko Anda.</p>
-        </div>
-        <form id="formToko">
-          <div class="form-group">
-            <label for="tokoNama">Nama Toko</label>
-            <input type="text" id="tokoNama" value="Sadena Coffee & Eatery" required>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="tokoTelp">Nomor Telepon Publik</label>
-              <input type="tel" id="tokoTelp" value="+62 811-2233-4455" required>
-            </div>
-            <div class="form-group">
-              <label for="tokoEmail">Email Publik</label>
-              <input type="email" id="tokoEmail" value="hello@sadena.com" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="tokoAlamat">Alamat Lengkap</label>
-            <textarea id="tokoAlamat" required>Jl. Merdeka No. 45, Kecamatan Sidoarjo, Jawa Timur 61211</textarea>
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-              Simpan Perubahan
-            </button>
-          </div>
-        </form>
-      </div>
+      <!-- Panel 1: Akun Admin -->
+      <section class="settings-panel active" id="panel-admin">
+        <h2>Akun Admin</h2>
+        <p>Perbarui informasi profil dan kredensial akun Anda.</p>
 
-      <!-- Tab: Akun Admin -->
-      <div class="tab-pane" id="tab-akun">
-        <div class="pane-header">
-          <h3>Akun Admin</h3>
-          <p>Perbarui informasi profil dan kontak akun Anda.</p>
-        </div>
-        <form id="formAkun">
+        <!-- MENGHUBUNGKAN ACTION KE ROUTE UPDATE PROFIL -->
+        <form action="{{ route('admin.pengaturan.updateProfile') }}" method="POST">
+          @csrf
+          @method('PUT')
+
           <div class="form-group">
-            <label for="adminNama">Nama Lengkap</label>
-            <input type="text" id="adminNama" value="Administrator" required>
+            <label for="adminName">Nama Lengkap</label>
+            <!-- Mengambil nama otomatis dari database menggunakan Auth::user()->nama -->
+            <input type="text" id="adminName" name="name" value="{{ Auth::user()->nama }}" required>
           </div>
+
           <div class="form-group">
             <label for="adminEmail">Email Login</label>
-            <input type="email" id="adminEmail" value="admin@sadena.com" required>
+            <!-- Mengambil email otomatis dari database menggunakan Auth::user()->email -->
+            <input type="email" id="adminEmail" name="email" value="{{ Auth::user()->email }}" required>
           </div>
-          <div class="form-actions">
+
+          <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
             <button type="submit" class="btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
               Simpan Profil
             </button>
           </div>
         </form>
-      </div>
+      </section>
 
-      <!-- Tab: Keamanan -->
-      <div class="tab-pane" id="tab-keamanan">
-        <div class="pane-header">
-          <h3>Keamanan Kata Sandi</h3>
-          <p>Ganti kata sandi untuk menjaga keamanan akun Anda.</p>
-        </div>
-        <form id="formKeamanan">
+      <!-- Panel 2: Keamanan / Perubahan Password -->
+      <section class="settings-panel" id="panel-security">
+        <h2>Keamanan Akun</h2>
+        <p>Ubah kata sandi secara berkala untuk menjaga keamanan akun Anda.</p>
+
+        <!-- MENGHUBUNGKAN ACTION KE ROUTE UPDATE PASSWORD -->
+        <form action="{{ route('admin.pengaturan.updatePassword') }}" method="POST">
+          @csrf
+          @method('PUT')
+
           <div class="form-group">
-            <label for="passLama">Kata Sandi Saat Ini</label>
-            <input type="password" id="passLama" placeholder="Masukkan sandi saat ini" required>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="passBaru">Kata Sandi Baru</label>
-              <input type="password" id="passBaru" placeholder="Minimal 8 karakter" required>
-            </div>
-            <div class="form-group">
-              <label for="passKonfirm">Konfirmasi Sandi Baru</label>
-              <input type="password" id="passKonfirm" placeholder="Ketik ulang sandi baru" required>
+            <label for="currentPassword">Kata Sandi Saat Ini</label>
+            <div class="password-wrapper">
+              <input type="password" id="currentPassword" name="current_password" placeholder="Masukkan kata sandi lama..." required>
+              <button type="button" class="toggle-password" title="Lihat/Sembunyikan">
+                <!-- Ikon Mata Tertutup -->
+                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              </button>
             </div>
           </div>
-          <div class="form-actions">
+
+          <div class="form-group">
+            <label for="newPassword">Kata Sandi Baru</label>
+            <div class="password-wrapper">
+              <input type="password" id="newPassword" name="new_password" placeholder="Masukkan kata sandi baru..." required>
+              <button type="button" class="toggle-password" title="Lihat/Sembunyikan">
+                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Konfirmasi Kata Sandi Baru</label>
+            <div class="password-wrapper">
+              <input type="password" id="confirmPassword" name="new_password_confirmation" placeholder="Ulangi kata sandi baru..." required>
+              <button type="button" class="toggle-password" title="Lihat/Sembunyikan">
+                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
             <button type="submit" class="btn-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-              Perbarui Sandi
+              Perbarui Kata Sandi
             </button>
           </div>
         </form>
-      </div>
+      </section>
 
-    </section>
+    </div>
+
   </div>
 
 @endsection
 
 @section('custom-js')
+<!-- (Bagian JS tetap sama persis seperti milikmu, tidak perlu diubah) -->
 <script>
-  (function() {
-    'use strict';
+  document.addEventListener("DOMContentLoaded", function () {
+    const navItems = document.querySelectorAll(".settings-nav-item");
+    const panels = document.querySelectorAll(".settings-panel");
 
-    // Logika Navigasi Tab
-    var tabBtns = document.querySelectorAll('.tab-btn');
-    var tabPanes = document.querySelectorAll('.tab-pane');
+    navItems.forEach(function (item) {
+      item.addEventListener("click", function () {
+        navItems.forEach(function (nav) { nav.classList.remove("active"); });
+        this.classList.add("active");
 
-    tabBtns.forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var targetId = this.getAttribute('data-target');
-        
-        // Hapus class active dari semua tombol dan panel
-        tabBtns.forEach(function(b) { b.classList.remove('active'); });
-        tabPanes.forEach(function(p) { p.classList.remove('active'); });
-        
-        // Tambahkan class active ke elemen yang dipilih
-        this.classList.add('active');
-        document.getElementById(targetId).classList.add('active');
+        panels.forEach(function (panel) { panel.classList.remove("active"); });
+
+        const targetId = this.getAttribute("data-target");
+        document.getElementById(targetId).classList.add("active");
       });
     });
+  });
 
-    // Simulasi Submit Form (Agar tidak me-reload halaman)
-    var forms = document.querySelectorAll('form');
-    forms.forEach(function(form) {
-      form.addEventListener('submit', function(e) {
-        e.preventDefault();
+  // Logika Toggle Password Visibility
+    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+    
+    togglePasswordBtns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        // Cari input yang posisinya persis sebelum tombol mata ini
+        const input = this.previousElementSibling;
+        const icon = this.querySelector('.eye-icon');
         
-        // Asumsi fungsi showToast sudah ada di app.blade.php utama
-        if (typeof showToast === 'function') {
-          showToast('Perubahan berhasil disimpan!');
+        if (input.type === 'password') {
+          input.type = 'text';
+          // Ubah ikon menjadi mata terbuka
+          icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
         } else {
-          alert('Perubahan berhasil disimpan!');
-        }
-        
-        // Kosongkan form password jika itu tab keamanan
-        if (this.id === 'formKeamanan') {
-          this.reset();
+          input.type = 'password';
+          // Ubah ikon menjadi mata tertutup (tercoret)
+          icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
         }
       });
     });
-  })();
 </script>
 @endsection

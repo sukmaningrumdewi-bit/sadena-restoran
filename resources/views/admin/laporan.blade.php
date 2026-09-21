@@ -194,18 +194,27 @@
 @endsection
 
 @section('content')
-
-  <div class="report-header">
+<div class="report-header">
     <div class="report-title">
       <h2>Ringkasan Performa</h2>
       <p id="subtitlePeriod">Analisis pendapatan dan penjualan produk Sadena.</p>
     </div>
     
-    <!-- Pilihan Filter: Hari Ini, Minggu Ini, Bulan Ini[cite: 15] -->
-    <div class="filter-group" id="periodFilter">
+    <div class="filter-group" id="periodFilter" style="align-items: center;">
       <button type="button" class="filter-btn active" data-period="today">Hari Ini</button>
       <button type="button" class="filter-btn" data-period="week">Minggu Ini</button>
       <button type="button" class="filter-btn" data-period="month">Bulan Ini</button>
+
+      <!-- Garis Pemisah -->
+      <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+
+      <!-- Kotak Kalender Kustom -->
+      <form action="{{ route('admin.laporan') }}" method="GET" style="margin: 0; display: inline-flex;">
+          <input type="date" name="tanggal_spesifik" 
+                 style="padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--text-muted); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; outline: none; background-color: #fff; transition: all 0.2s ease;" 
+                 title="Pilih tanggal laporan spesifik"
+                 onchange="this.form.submit()">
+      </form>
     </div>
   </div>
 
@@ -219,7 +228,8 @@
       </span>
       <div class="stat-text">
         <p class="stat-label">Total Pendapatan</p>
-        <p class="stat-value" id="valPendapatan">Rp 4.250.000</p>
+        <!-- Memanggil variabel dari LaporanController -->
+        <p class="stat-value" id="valPendapatan">Rp {{ number_format($todayRevenue ?? 0, 0, ',', '.') }}</p>
       </div>
     </article>
 
@@ -233,7 +243,8 @@
       </span>
       <div class="stat-text">
         <p class="stat-label">Pesanan Selesai</p>
-        <p class="stat-value" id="valPesanan">128</p>
+        <!-- Memanggil variabel dari LaporanController -->
+        <p class="stat-value" id="valPesanan">{{ $todayOrders ?? 0 }}</p>
       </div>
     </article>
 
@@ -247,7 +258,7 @@
       </span>
       <div class="stat-text">
         <p class="stat-label">Produk Terjual</p>
-        <p class="stat-value" id="valProduk">345</p>
+        <p class="stat-value" id="valProduk">-</p>
       </div>
     </article>
   </section>
@@ -396,10 +407,22 @@
     const valPesanan = document.getElementById('valPesanan');
     const valProduk = document.getElementById('valProduk');
 
-    const dummyData = {
-      'today': { rev: 'Rp 4.250.000', orders: '128', items: '345' },
-      'week':  { rev: 'Rp 28.500.000', orders: '840', items: '2.150' },
-      'month': { rev: 'Rp 112.400.000', orders: '3.205', items: '9.840' }
+    const dynamicData = {
+      'today': { 
+          rev: 'Rp {{ number_format($todayRevenue ?? 0, 0, ",", ".") }}', 
+          orders: '{{ $todayOrders ?? 0 }}', 
+          items: '-' 
+      },
+      'week':  { 
+          rev: 'Rp {{ number_format($weekRevenue ?? 0, 0, ",", ".") }}', 
+          orders: '{{ $weekOrders ?? 0 }}', 
+          items: '-' 
+      },
+      'month': { 
+          rev: 'Rp {{ number_format($monthRevenue ?? 0, 0, ",", ".") }}', 
+          orders: '{{ $monthOrders ?? 0 }}', 
+          items: '-' 
+      }
     };
 
     filterBtns.forEach(function(btn) {
@@ -408,7 +431,7 @@
         this.classList.add('active');
         
         var period = this.getAttribute('data-period');
-        var data = dummyData[period];
+        var data = dynamicData[period]; // Menggunakan dynamicData
         
         [valPendapatan, valPesanan, valProduk].forEach(function(el) {
           el.style.opacity = '0.3';
@@ -417,7 +440,8 @@
         setTimeout(function() {
           valPendapatan.textContent = data.rev;
           valPesanan.textContent = data.orders;
-          valProduk.textContent = data.items;
+          // valProduk dibiarkan '-' atau bisa ditambahkan logika hitung dari detail_pesanans nanti
+          valProduk.textContent = data.items; 
           
           [valPendapatan, valPesanan, valProduk].forEach(function(el) {
             el.style.opacity = '1';

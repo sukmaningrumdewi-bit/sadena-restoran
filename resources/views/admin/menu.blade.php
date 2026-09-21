@@ -463,7 +463,7 @@
   /* 1. Memperlebar kotak modal agar tidak terlihat kecil/sempit */
   #menuModal .modal-card {
     width: 100% !important;
-    max-width: 520px !important;
+    max-width: 750px !important;
     padding: 32px !important;
     border-radius: 16px !important;
     background: #ffffff !important;
@@ -801,7 +801,7 @@
         </div>
 
         <div class="form-group">
-          <label>Upload Foto (.PNG, .JPG)</label>
+          <label>Upload Foto (.PNG, .JPG, .JPEG)</label>
           <input type="file" name="gambar" accept=".png, .jpg, .jpeg" required>
         </div>
       </div>
