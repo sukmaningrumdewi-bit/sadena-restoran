@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Menu;
+use App\Models\User;
+use App\Models\Pesanans;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Menghitung total seluruh pendapatan (misal dari harga dikali stok atau total kuantitas terjual)
-        $totalPendapatan = Menu::sum(\DB::raw('harga * stok')); 
+       // Gunakan tabel Pesanan agar sinkron dengan Laporan (mulai dari 0 dengan jujur)
+        $totalPendapatan = Pesanans::sum('total_harga'); 
         
-        // Menghitung jumlah menu aktif yang tersedia
         $menuTersedia = Menu::where('stok', '>', 0)->count();
+        $totalPengguna = User::where('role', 'user')->count();
 
-        return view('admin.dashboard', compact('totalPendapatan', 'menuTersedia'));
+        return view('admin.dashboard', compact('totalPendapatan', 'menuTersedia', 'totalPengguna'));
     }
 }

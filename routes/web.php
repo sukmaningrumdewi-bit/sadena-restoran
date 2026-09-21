@@ -6,10 +6,9 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\UserDashboardController;
-use App\Http\Controllers\UserReservasiController;
-use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ManajemenAkunController;
+use App\Http\Controllers\AdminPengaturanController;
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -60,9 +59,7 @@ Route::post('/login-proses', [AuthController::class, 'login'])->name('login.pros
 // Dashboard Admin & User (Dilindungi middleware)
 Route::middleware(['auth'])->group(function () {
     // ---- ADMIN ROUTES ----
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::get('/admin/pemesanan', function () {
         return view('admin.pemesanan');
@@ -72,23 +69,33 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/menu', [MenuController::class, 'store'])->name('admin.menu.store');
     Route::delete('/admin/menu/{id}', [MenuController::class, 'destroy'])->name('admin.menu.destroy');
     Route::get('/admin/menu/{id}/edit', [MenuController::class, 'edit'])->name('admin.menu.edit');
-Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
+    Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.menu.update');
 
-    Route::get('/admin/pelanggan', function () {
-    return view('admin.pelanggan');
-    })->name('admin.pelanggan');
+    Route::get('/admin/manajemen-akun', function () {
+    return view('admin.manajemen_akun'); // <-- Ubah jadi pakai underscore (_)
+})->name('admin.manajemen-akun');
 
-    Route::get('/admin/laporan', function () {
-    return view('admin.laporan');
-    })->name('admin.laporan');
+    Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
 
     Route::get('/admin/pengaturan', function () {
-    return view('admin.pengaturan');
+        return view('admin.pengaturan');
     })->name('admin.pengaturan');
+
+    Route::put('/admin/pengaturan/profil', [AdminPengaturanController::class, 'updateProfile'])->name('admin.pengaturan.updateProfile');
+    Route::put('/admin/pengaturan/password', [AdminPengaturanController::class, 'updatePassword'])->name('admin.pengaturan.updatePassword');
+
+    Route::middleware(['auth'])->group(function () {
+    // Route Manajemen Akun
+    Route::get('/admin/manajemen-akun', [ManajemenAkunController::class, 'index'])->name('admin.manajemen-akun');
+    Route::post('/admin/manajemen-akun', [ManajemenAkunController::class, 'store'])->name('admin.manajemen-akun.store');
+    Route::delete('/admin/manajemen-akun/{id}', [ManajemenAkunController::class, 'destroy'])->name('admin.manajemen-akun.destroy');
+});
 
 
     // ---- USER ROUTES ----
-    Route::get('/user/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/user/dashboard', function () {
+        return view('user.dashboard'); 
+    })->name('user.dashboard');
 
     Route::get('/user/pesanan', function () {
         return view('user.pesanan'); 
@@ -102,8 +109,3 @@ Route::put('/admin/menu/{id}', [MenuController::class, 'update'])->name('admin.m
     // Proses Logout bersama
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
-
-Route::get('/user/reservasi', [UserReservasiController::class, 'index'])->name('user.reservasi');
-Route::get('/user/profile', [UserProfileController::class, 'index'])->name('user.profile');
-Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
-Route::get('/admin/laporan', [LaporanController::class, 'index'])->name('admin.laporan');
