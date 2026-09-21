@@ -43,15 +43,15 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // 1. Halaman Login Admin
 Route::get('/admin', function () {
-    return view('admin.index'); // Pastikan file view admin index-nya ada
+    return view('admin.index');
 })->name('admin.login');
 
-// 2. Halaman Login User
+// 2. Halaman Login User (DIPERBARUI)
 Route::get('/user', function () {
-    return view('user.login'); // Mengarah ke resources/views/user/login.blade.php
-})->name('user.login');
+    return view('user.login'); 
+})->name('user.login'); // <-- Diubah menjadi 'user.login'
 
-// Proses Login POST (Menggunakan method login AuthController untuk memproses data keduanya)
+// Proses Login POST
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 Route::post('/user/login', [AuthController::class, 'login'])->name('user.login.post');
 Route::post('/login-proses', [AuthController::class, 'login'])->name('login.proses');
@@ -101,10 +101,12 @@ Route::middleware(['auth'])->group(function () {
         return view('user.pesanan'); 
     })->name('user.pesanan');
 
-    Route::get('/user/favorit', function () {
-        return view('user.favorit'); 
-    })->name('user.favorit');
+    // Route Reservasi User
+    Route::get('/user/reservasi', [UserReservasiController::class, 'index'])->name('user.reservasi');
+    Route::post('/user/reservasi', [UserReservasiController::class, 'store'])->name('user.reservasi.store');
 
+    Route::get('/user/profile', [UserProfileController::class, 'index'])->name('user.profile');
+    Route::put('/user/profile', [UserProfileController::class, 'update'])->name('user.profile.update');
 
     // Proses Logout bersama
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
